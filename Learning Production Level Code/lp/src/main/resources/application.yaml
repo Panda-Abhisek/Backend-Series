@@ -1,0 +1,10 @@
+spring:
+  application:
+    name: lp
+
+  profiles:
+    active: prod
+
+server:
+  servlet:
+    context-path: /api/v1
