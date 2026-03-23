@@ -1,9 +1,6 @@
 package com.panda.lp.controllers;
 
-import com.panda.lp.payloads.PageResponse;
-import com.panda.lp.payloads.ProductFilterRequest;
-import com.panda.lp.payloads.ProductRequest;
-import com.panda.lp.payloads.ProductResponse;
+import com.panda.lp.payloads.*;
 import com.panda.lp.responses.ApiResponse;
 import com.panda.lp.services.ProductService;
 import jakarta.validation.Valid;
@@ -25,17 +22,33 @@ public class ProductController {
 
     private final ProductService productService;
 
+    @GetMapping("/scroll-junior")
+    public ResponseEntity<?> getAllWithScroll(
+            @RequestParam(required = false) String search,
+            @RequestParam(required = false) Boolean live,
+            @RequestParam(required = false) BigDecimal minPrice,
+            @RequestParam(required = false) BigDecimal maxPrice,
+
+            @RequestParam(required = false) String scrollId,
+            @RequestParam(defaultValue = "5") int size,
+            @RequestParam(defaultValue = "createdAt") String sortBy,
+            @RequestParam(defaultValue = "desc") String sortDir
+    ) {
+        ScrollResponse<ProductResponse> response = productService.getAllWithScroll(search, live, minPrice, maxPrice, scrollId, size, sortBy, sortDir);
+        return ResponseEntity.ok(ApiResponse.success("Products fetched Successfully", response));
+    }
+
     @GetMapping("/offset-senior")
-    public ResponseEntity<ApiResponse<PageResponse<ProductResponse>>> getAllProductsV2(
+    public ResponseEntity<ApiResponse<PaginatedResponse<ProductResponse>>> getAllProductsV2(
             @Valid ProductFilterRequest filter, // filter dto
             @PageableDefault(size = 10, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable // pageable default - Pageable pageable
     ) {
-        PageResponse<ProductResponse> productsV2 = productService.getProductsV2(filter, pageable);
+        PaginatedResponse<ProductResponse> productsV2 = productService.getProductsV2(filter, pageable);
         return ResponseEntity.ok(ApiResponse.success("Products fetched successfully", productsV2));
     }
 
     @GetMapping("/offset-junior")
-    public ResponseEntity<ApiResponse<PageResponse<ProductResponse>>> getAllProducts(
+    public ResponseEntity<ApiResponse<PaginatedResponse<ProductResponse>>> getAllProducts(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(defaultValue = "createdAt") String sortBy,
@@ -63,7 +76,7 @@ public class ProductController {
                         : Sort.by(sortBy).descending()
         );
 
-        PageResponse<ProductResponse> products = productService.getProducts(
+        PaginatedResponse<ProductResponse> products = productService.getProducts(
                 pageable, title, live, minPrice, maxPrice
         );
 
