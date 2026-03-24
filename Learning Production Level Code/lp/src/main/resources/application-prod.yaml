@@ -23,6 +23,7 @@ spring:
         jdbc:
           time_zone: UTC
         format_sql: false
+        show_sql: true
 
   flyway:
     validate-on-migrate: true
@@ -36,7 +37,18 @@ spring:
       pageable:
         default-page-size: 10
         max-page-size: 50 # This prevents the "size=10000" attack
-
+# Redis configurations
+    redis:
+      host: localhost
+      port: 6379
+      timeout: 5000
+      jedis: # jedis client configurations
+        pool:
+          max-active: 10
+          max-idle: 5
+          min-idle: 2
+          max-wait: 2000
+#      password:
 server:
   port: 8080
   shutdown: graceful
