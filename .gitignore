@@ -1,0 +1,7 @@
+# IDE
+.idea/
+*.iml
+
+# Parent directories (siblings - not part of this repo)
+auth-app/
+ecom-microservice/
