@@ -1,0 +1,22 @@
+# Server configuration
+server:
+  port: 8080
+
+# Redis configuration for rate limiting
+spring:
+  data:
+    redis:
+      host: localhost      # Redis server hostname
+      port: 6379          # Redis server port
+      timeout: 2000        # Connection timeout (ms)
+      lettuce:
+        pool:
+          max-active: 8    # Max connections in pool
+          max-idle: 8      # Max idle connections
+          min-idle: 0      # Min idle connections
+
+# Rate limiting configuration (currently hardcoded in TokenBucketService)
+ratelimit:
+  token-bucket:
+    capacity: 10          # Maximum tokens per user
+    refill-rate: 1        # Tokens added per second
